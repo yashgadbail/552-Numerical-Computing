@@ -6,6 +6,20 @@ using namespace std;
 
 RootFinder::RootFinder(const vector<double>& coefficients) : coeffs(coefficients) {}
 
+pair<double, double> RootFinder::findBisectionInterval(double start, double end, double step) {
+    double a = start, b = start + step;
+    while (b <= end) {
+        if (evaluate(a) * evaluate(b) < 0) {
+            return {a, b};
+        }
+        a = b;
+        b += step;
+    }
+    return {NAN, NAN};
+}
+double RootFinder::findInitialGuess(double a, double b) {
+    return (a + b) / 2;
+}
 double RootFinder::evaluate(double x) {
     double result = 0;
     for (size_t i = 0; i < coeffs.size(); ++i) {

@@ -10,33 +10,61 @@ double g(double x) {
 }
 
 int main() {
-    int degree;
-    cout << "Enter the degree of the polynomial: ";
-    cin >> degree;
+    int degree= 3;
+    const double precision = 1e-6;
+    const int maxIter = 100;
 
-    vector<double> coefficients(degree + 1);
-    cout << "Enter the coefficients from highest to lowest degree:\n";
+    // cout << "Enter the degree of the polynomial: ";
+    // cin >> degree;
+
+    // vector<double> coefficients(degree + 1);
+    // cout << "Enter the coefficients from highest to lowest degree:\n";
+    // for (int i = 0; i <= degree; ++i) {
+    //     cin >> coefficients[i];
+    // }
+    vector<double> coefficients = {1, 0, -1, -2}; 
+    cout << "Polynomial: ";
     for (int i = 0; i <= degree; ++i) {
-        cin >> coefficients[i];
+        if (coefficients[i] != 0) {
+            if(degree-i == 0){
+                cout << coefficients[i] << " ";
+            }
+            else if(coefficients[i] == 1){
+                cout << " + x^" << (degree - i) << " ";
+            }
+            else if(coefficients[i] == -1){
+                cout << " - x^" << (degree - i) << " ";
+            }
+            else {
+                cout << coefficients[i] << "x^" << (degree - i) << " ";
+            }
+        }
     }
+    cout << "= 0" << endl;
 
     RootFinder solver(coefficients);
 
-    double a, b, x0;
-    cout << "Enter the interval [a, b] for Bisection Method: ";
-    cin >> a >> b;
+    pair<double, double> interval = solver.findBisectionInterval(-100, 100, 0.1);
+    if (isnan(interval.first)) {
+        cout << "No interval found for Bisection Method.\n";
+        return 1;
+    }
 
-    cout << "Enter the initial guess for Newton-Raphson and Fixed-Point: ";
-    cin >> x0;
+    double a = interval.first;
+    double b = interval.second;
+    cout << "--> Bisection Interval: ["<< a <<", "<< b << "]\n";
 
-    double rootBisection = solver.bisection(a, b, 1e-6, 100);
-    cout << "Bisection Method Root: " << rootBisection << endl;
+    double x0 = solver.findInitialGuess(a, b);
 
-    double rootNewton = solver.newtonRaphson(x0, 1e-6, 100);
-    cout << "Newton-Raphson Root: " << rootNewton << endl;
+    double rootBisection = solver.bisection(a, b,precision,maxIter);
+    cout << " > Bisection Method Root: " << rootBisection << endl;
 
-    double rootFixedPoint = solver.fixedPoint(x0, g, 1e-6, 100);
-    cout << "Fixed-Point Iteration Root: " << rootFixedPoint << endl;
+    double rootNewton = solver.newtonRaphson(x0,precision,maxIter);
+    cout <<" > Newton-Raphson Root: "<< rootNewton << endl;
+
+    double rootFixedPoint = solver.fixedPoint(x0, g,precision,maxIter);
+    cout <<" > Fixed-Point Iteration Root: "<< rootFixedPoint<< endl;
 
     return 0;
 }
+// g++ -o polynomial_solver main.cpp RootFinder.cpp -std=c++11 -lm
