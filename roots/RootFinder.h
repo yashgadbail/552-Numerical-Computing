@@ -6,6 +6,8 @@ using namespace std;
 class RootFinder {
     public:
         RootFinder(const vector<double>& coefficients);
+        pair<double, double> findBisectionInterval(double start, double end, double step);
+        double findInitialGuess(double a, double b);
         
         double bisection(double a, double b, double tol, int maxIter);
         double newtonRaphson(double x0, double tol, int maxIter);
