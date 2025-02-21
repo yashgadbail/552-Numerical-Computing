@@ -1,46 +1,38 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 
-#include <iostream>
-#include <vector>
-#include <fstream>
+#include<iostream>
+#include<fstream>
+#include<vector>
 
 using namespace std;
 
 class Matrix {
-private:
-    int rows, cols;
-    vector<vector<double>> data;
+    private:
+        int rows, cols;
+        vector<vector<double>> data;
 
-public:
-    // Constructors & Destructor
-    Matrix();
-    Matrix(int r, int c);
-    Matrix(const Matrix& other);
-    ~Matrix();
+    public:
+        Matrix();
+        Matrix(int r,int c);
+        Matrix(const Matrix& other);
+        ~Matrix(){}
 
-    // Getters
-    int getRows();
-    int getCols();
+        int getRows();
+        int getCols();
 
-    // Basic Operations
-    void print();
-    void writeToFile(string filename);
+        void print();
+        void writeToFile(string filename);
+        static Matrix readFromFile(string filename);
 
-    // Operators
-    Matrix operator+(Matrix& other);
-    Matrix operator-(Matrix& other);
-    friend ostream& operator<<(ostream& os, Matrix& mat);
-    friend istream& operator>>(istream& is, Matrix& mat);
+        Matrix operator+(Matrix& other);
+        Matrix operator-(Matrix& other);
 
-    // Identity Matrix Generator
-    static Matrix identityMatrix(int size);
+        static Matrix identityMatrix(int size);
+        bool isSymmetric();
 
-    // Check if matrix is symmetric
-    bool isSymmetric();
-
-    // File handling
-    static Matrix readFromFile(string filename);
+        friend ostream& operator<<(ostream& os,Matrix& mat);
+        friend istream& operator>>(istream& is,Matrix& mat);
 };
 
-#endif // MATRIX_HPP
+#endif
