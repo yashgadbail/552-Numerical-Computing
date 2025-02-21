@@ -1,52 +1,84 @@
 #include "matrix.hpp"
+#include <fstream>  // Include for file writing
 
-Matrix getMatrixFromFile(string matrixName) {
-    string filename;
-    cout << "Enter filename (without extension) for " << matrixName << ": ";
-    cin >> filename;
-    return Matrix::readFromFile(filename);
-}
+int main(){
+    string choice;
+    cout<<"Read from file (f) or input manually (m)? ";
+    cin>>choice;
 
-int main() {
-    // Get matrices from two separate files
-    Matrix A = getMatrixFromFile("Matrix A");
-    Matrix B = getMatrixFromFile("Matrix B");
+    Matrix A,B;
 
-    if (A.getRows() == 0 || B.getRows() == 0) {
-        cout << "Error reading matrices." << endl;
-        return 1;
+    if(choice=="f"){
+        string filenameA,filenameB;
+        cout<<"Enter filename for Matrix A (without extension): ";
+        cin>>filenameA;
+        A=Matrix::readFromFile(filenameA);
+
+        cout<<"Enter filename for Matrix B (without extension): ";
+        cin>>filenameB;
+        B=Matrix::readFromFile(filenameB);
+    }
+    else{
+        int r,c;
+        cout<<"Enter dimensions for Matrix A: ";
+        cin>>r>>c;
+        A=Matrix(r,c);
+        cout<<"Enter elements for Matrix A:\n";
+        cin>>A;
+
+        cout<<"Enter dimensions for Matrix B: ";
+        cin>>r>>c;
+        B=Matrix(r,c);
+        cout<<"Enter elements for Matrix B:\n";
+        cin>>B;
     }
 
-    cout << "Matrix A:\n" << A;
-    cout << "Matrix B:\n" << B;
+    // Open output file
+    ofstream outFile("output.txt");
 
-    // Addition
-    Matrix C = A + B;
-    cout << "A + B:\n" << C;
-    C.writeToFile("output_addition");
+    cout<<"\nMatrix A:\n"<<A;
+    outFile<<"\nMatrix A:\n"<<A;
 
-    // Subtraction
-    Matrix D = A - B;
-    cout << "A - B:\n" << D;
-    D.writeToFile("output_subtraction");
+    cout<<"\nMatrix B:\n"<<B;
+    outFile<<"\nMatrix B:\n"<<B;
 
-    // Identity Matrix
-    if (A.getRows() == A.getCols()) {
-        Matrix I = Matrix::identityMatrix(A.getRows());
-        cout << "Identity Matrix of size " << A.getRows() << "x" << A.getRows() << ":\n" << I;
-        I.writeToFile("output_identity");
+    Matrix C=A+B;
+    cout<<"\nMatrix A + B:\n"<<C;
+    outFile<<"\nMatrix A + B:\n"<<C;
+
+    Matrix D=A-B;
+    cout<<"\nMatrix A - B:\n"<<D;
+    outFile<<"\nMatrix A - B:\n"<<D;
+
+    if(A.isSymmetric()){ 
+        cout<<"\nMatrix A is symmetric.\n"; 
+        outFile<<"\nMatrix A is symmetric.\n"; 
+    }
+    else{ 
+        cout<<"\nMatrix A is NOT symmetric.\n"; 
+        outFile<<"\nMatrix A is NOT symmetric.\n"; 
     }
 
-    // Check if A is symmetric
-    if (A.isSymmetric())
-        cout << "Matrix A is symmetric." << endl;
-    else
-        cout << "Matrix A is not symmetric." << endl;
+    if(B.isSymmetric()){ 
+        cout<<"Matrix B is symmetric.\n"; 
+        outFile<<"Matrix B is symmetric.\n"; 
+    }
+    else{ 
+        cout<<"Matrix B is NOT symmetric.\n"; 
+        outFile<<"Matrix B is NOT symmetric.\n"; 
+    }
 
-    if (B.isSymmetric())
-        cout << "Matrix B is symmetric." << endl;
-    else
-        cout << "Matrix B is not symmetric." << endl;
+    int size;
+    cout<<"\nEnter size for Identity Matrix: ";
+    cin>>size;
+
+    Matrix I=Matrix::identityMatrix(size);
+    cout<<"\nIdentity Matrix:\n"<<I;
+    outFile<<"\nIdentity Matrix:\n"<<I;
+
+    outFile.close();  // Close file after writing
+
+    cout<<"\nResults saved to output.txt\n";
 
     return 0;
 }
