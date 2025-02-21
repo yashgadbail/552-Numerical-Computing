@@ -66,6 +66,20 @@ Matrix Matrix::identityMatrix(int size){
     return identity;
 }
 
+// Multiplication
+Matrix Matrix::operator*(Matrix& other){
+    if(cols!=other.rows){
+        cout<<"Matrix dimensions do not match for multiplication!\n";
+        return Matrix();
+    }
+    Matrix result(rows,other.cols);
+    for(int i=0;i<rows;i++)
+        for(int j=0;j<other.cols;j++)
+            for(int k=0;k<cols;k++)
+                result.data[i][j]+=data[i][k]*other.data[k][j];
+    return result;
+}
+
 // Check if matrix is symmetric
 bool Matrix::isSymmetric(){
     if(rows!=cols){return false;}

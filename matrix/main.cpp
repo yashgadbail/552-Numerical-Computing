@@ -1,5 +1,11 @@
 #include "matrix.hpp"
-#include <fstream>  // Include for file writing
+
+Matrix getMatrixFromFile(string matrixName){
+    string filename;
+    cout<<"Enter filename (without extension) for "<<matrixName<<": ";
+    cin>>filename;
+    return Matrix::readFromFile(filename);
+}
 
 int main(){
     string choice;
@@ -9,14 +15,8 @@ int main(){
     Matrix A,B;
 
     if(choice=="f"){
-        string filenameA,filenameB;
-        cout<<"Enter filename for Matrix A (without extension): ";
-        cin>>filenameA;
-        A=Matrix::readFromFile(filenameA);
-
-        cout<<"Enter filename for Matrix B (without extension): ";
-        cin>>filenameB;
-        B=Matrix::readFromFile(filenameB);
+        A=getMatrixFromFile("Matrix A");
+        B=getMatrixFromFile("Matrix B");
     }
     else{
         int r,c;
@@ -33,52 +33,54 @@ int main(){
         cin>>B;
     }
 
-    // Open output file
-    ofstream outFile("output.txt");
+    if(A.getRows()==0||B.getRows()==0){
+        cout<<"Error reading matrices.\n";
+        return 1;
+    }
 
     cout<<"\nMatrix A:\n"<<A;
-    outFile<<"\nMatrix A:\n"<<A;
-
     cout<<"\nMatrix B:\n"<<B;
-    outFile<<"\nMatrix B:\n"<<B;
 
-    Matrix C=A+B;
-    cout<<"\nMatrix A + B:\n"<<C;
-    outFile<<"\nMatrix A + B:\n"<<C;
-
-    Matrix D=A-B;
-    cout<<"\nMatrix A - B:\n"<<D;
-    outFile<<"\nMatrix A - B:\n"<<D;
-
-    if(A.isSymmetric()){ 
-        cout<<"\nMatrix A is symmetric.\n"; 
-        outFile<<"\nMatrix A is symmetric.\n"; 
+    // Addition
+    if(A.getRows()==B.getRows()&&A.getCols()==B.getCols()){
+        Matrix C=A+B;
+        cout<<"\nA + B:\n"<<C;
+        C.writeToFile("output_addition");
     }
-    else{ 
-        cout<<"\nMatrix A is NOT symmetric.\n"; 
-        outFile<<"\nMatrix A is NOT symmetric.\n"; 
+    else{
+        cout<<"\nAddition not possible (different dimensions).\n";
     }
 
-    if(B.isSymmetric()){ 
-        cout<<"Matrix B is symmetric.\n"; 
-        outFile<<"Matrix B is symmetric.\n"; 
+    // Subtraction
+    if(A.getRows()==B.getRows()&&A.getCols()==B.getCols()){
+        Matrix D=A-B;
+        cout<<"\nA - B:\n"<<D;
+        D.writeToFile("output_subtraction");
     }
-    else{ 
-        cout<<"Matrix B is NOT symmetric.\n"; 
-        outFile<<"Matrix B is NOT symmetric.\n"; 
+    else{
+        cout<<"\nSubtraction not possible (different dimensions).\n";
     }
 
-    int size;
-    cout<<"\nEnter size for Identity Matrix: ";
-    cin>>size;
+    // Multiplication
+    if(A.getCols()==B.getRows()){
+        Matrix E=A*B;
+        cout<<"\nA * B:\n"<<E;
+        E.writeToFile("output_multiplication");
+    }
+    else{
+        cout<<"\nMultiplication not possible (A columns != B rows).\n";
+    }
 
-    Matrix I=Matrix::identityMatrix(size);
-    cout<<"\nIdentity Matrix:\n"<<I;
-    outFile<<"\nIdentity Matrix:\n"<<I;
+    // Identity Matrix
+    if(A.getRows()==A.getCols()){
+        Matrix I=Matrix::identityMatrix(A.getRows());
+        cout<<"\nIdentity Matrix of size "<<A.getRows()<<"x"<<A.getRows()<<":\n"<<I;
+        I.writeToFile("output_identity");
+    }
 
-    outFile.close();  // Close file after writing
-
-    cout<<"\nResults saved to output.txt\n";
+    // Symmetry Check
+    cout<<"\nMatrix A is "<<(A.isSymmetric()?"symmetric.":"not symmetric.")<<"\n";
+    cout<<"Matrix B is "<<(B.isSymmetric()?"symmetric.":"not symmetric.")<<"\n";
 
     return 0;
 }

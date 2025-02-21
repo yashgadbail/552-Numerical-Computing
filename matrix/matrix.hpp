@@ -27,6 +27,7 @@ class Matrix {
 
         Matrix operator+(Matrix& other);
         Matrix operator-(Matrix& other);
+        Matrix operator*(Matrix& other);
 
         static Matrix identityMatrix(int size);
         bool isSymmetric();
