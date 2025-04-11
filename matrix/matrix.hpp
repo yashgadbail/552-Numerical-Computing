@@ -32,7 +32,9 @@ public:
     Matrix transpose();
     Matrix identityMatrix(int size);
     bool isSymmetric();
-    double determinant(); 
+    double determinant();
+    bool isDiagonallyDominant();
+	bool makeDiagonallyDominant();
     
     void print();
     void writeToFile(string filename);
@@ -52,9 +54,8 @@ public:
     // Gauss ELimination
 	vector<double> gaussJacobi(vector<double>& b, int maxIterations = 100, double tolerance = 1e-6);
 	vector<double> gaussSeidel(vector<double>& b, int maxIterations = 100, double tolerance = 1e-6);
-	bool isDiagonallyDominant();
-	bool makeDiagonallyDominant();
 
+    // 
 
     // Friend operators for I/O - changed to const references
     friend ostream& operator<<(ostream& os, const Matrix& mat);
